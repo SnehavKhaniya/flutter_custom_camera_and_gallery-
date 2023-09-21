@@ -1,8 +1,7 @@
-
-// A screen that allows users to take a picture using a given camera.
 import 'dart:io';
 
 import 'package:camera/camera.dart';
+import 'package:features_access/storage_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -92,9 +91,12 @@ class TakePictureScreenState extends State<TakePictureScreen> {
         setState(() {});
       }
     });
-    //});
+
 
   }
+
+  final StorageService storage = StorageService();
+  List<String>? urls = [];
 
   @override
   Widget build(BuildContext context) {
@@ -155,6 +157,15 @@ class TakePictureScreenState extends State<TakePictureScreen> {
 
                   if (!mounted) return;
 
+                  final imgName = image.name;
+                  final imgPath = image.path;
+
+                  storage
+                      .uploadFile(imgPath, imgName)
+                      .then((value) => print('Done'));
+
+
+
                   // If the picture was taken, display it on a new screen.
                   await Navigator.of(context).push(
                     MaterialPageRoute(
@@ -175,13 +186,14 @@ class TakePictureScreenState extends State<TakePictureScreen> {
           ),
 
           IconButton(
-            onPressed: ()=> _cameraToggle(),
+            onPressed: () => _cameraToggle(),
             icon: Icon(Icons.flip_camera_android_rounded),
 
           ),
 
         ],
       ),
+
       ],
       ),
     );
